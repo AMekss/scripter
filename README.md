@@ -22,7 +22,7 @@ Or install it yourself as:
 
 Usage example:
 ```ruby
-class MyScriptClass < Scripter::Base
+class MyScripterEnabledClass < Scripter::Base
   #ENV variables which will be assigned to instance
   env_variables :test_env
 
