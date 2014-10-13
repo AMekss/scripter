@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["arturs.mekss@gmail.com"]
   spec.summary       = %q{Library for reducing of boilerplate in ruby scripts with possibility to run fault tolerant iterations}
   spec.description   = %q{Library for reducing of boilerplate in ruby scripts with possibility to run fault tolerant iterations, for example mass notifications, or support scripts}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/AMekss/scripter"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
