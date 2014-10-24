@@ -27,7 +27,6 @@ module Scripter
         trap("SIGINT") { exit! }
 
         scripter_instance.with_fault_monitoring do
-          scripter_instance.instance_variable_set :@iteration_idx, 0
           scripter_instance.public_send(iteration_function_name)
         end
 
@@ -48,7 +47,7 @@ module Scripter
     end
 
     def perform_iteration(iteration_id, iteration_meta={}, verbose=true)
-      @iteration_idx += 1
+      @iteration_idx = (@iteration_idx || 0) + 1
       begin
         unless iteration_processed?(iteration_id)
           yield
