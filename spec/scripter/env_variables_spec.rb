@@ -3,11 +3,14 @@ require 'spec_helper'
 
 class Scripter::EnvVariablesTestable
   include Scripter::EnvVariables
+  env_variables :rails_env, :countries, :use_cache, :report_date
 
   # custom type casts test
   def type_cast_env_variable(name, value)
     if name == :countries
       value.split(/\s*,\s*/)
+    elsif name == :report_date
+      value.nil? ? Date.today : value
     else
       super
     end
@@ -27,7 +30,7 @@ describe Scripter::EnvVariables do
     it "should be able to add new Environment variable getters" do
       expect(@it.respond_to?(:test_variable)).to be false
       @it.class.send :env_variables, :test_variable
-      expect(@it).to receive(:env_variables).and_return({test_variable: 'something'})
+      expect(@it).to receive(:raw_env_variables).and_return({test_variable: 'something'})
       expect(@it.test_variable).to eq 'something'
     end
   end
@@ -37,13 +40,11 @@ describe Scripter::EnvVariables do
       expect(@it).to receive(:command_line_arguments).and_return(['notifications', 'RAILS_ENV=test', 'COUNTRIES=LV,EE,FI', 'use_cache=1'])
     end
 
-    it "#raw_env_variables should return only variables" do
-      expect(@it.raw_env_variables).to eq({'RAILS_ENV'=>'test', 'COUNTRIES'=>'LV,EE,FI', 'use_cache'=>'1'})
-    end
+    it { expect(@it.rails_env).to eq 'test' }
+    it { expect(@it.countries).to eq ['LV', 'EE', 'FI'] }
+    it { expect(@it.use_cache).to eq true }
+    it { expect(@it.report_date).to eq Date.today }
 
-    it "#env_variables should return normalized type casted variables" do
-      expect(@it.env_variables).to eq({rails_env: 'test', countries: ['LV', 'EE', 'FI'], use_cache: true})
-    end
   end
 
   describe "#type_cast_env_variable" do

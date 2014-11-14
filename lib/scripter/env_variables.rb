@@ -11,7 +11,10 @@ module Scripter
         variables.each do |env_variable|
           class_eval %{
             def #{env_variable}
-              env_variables[:#{env_variable}]
+              @env_variables ||= {}
+              @env_variables.fetch(:#{env_variable}) do
+                @env_variables[:#{env_variable}] = type_cast_env_variable(:#{env_variable}, raw_env_variables[:#{env_variable}])
+              end
             end
           }
         end
@@ -19,16 +22,13 @@ module Scripter
     end
 
     def raw_env_variables
-      Hash[command_line_arguments.select{|arg| arg.include?('=')}.map{|arg| arg.split("=")}]
-    end
-
-    def env_variables
-      @env_variables ||= begin
-        env_variables = raw_env_variables.map do |key, value|
+      @raw_env_variables ||= begin
+        raw_env_variables = command_line_arguments.select{|arg| arg.include?('=')}.map do |arg|
+          key, value = arg.split("=")
           nomalized_key = key.downcase.to_sym
-          [nomalized_key, type_cast_env_variable(nomalized_key, value)]
+          [nomalized_key, value]
         end
-        Hash[env_variables]
+        Hash[raw_env_variables]
       end
     end
 

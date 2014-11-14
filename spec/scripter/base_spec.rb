@@ -27,7 +27,7 @@ describe Scripter::Base do
   it "should have Errors, Logger, EnvVariables and IterationHistory modules included" do
     expect(subject).to respond_to(:add_error)
     expect(subject).to respond_to(:log)
-    expect(subject).to respond_to(:env_variables)
+    expect(subject).to respond_to(:type_cast_env_variable)
     expect(subject).to respond_to(:cache_store)
   end
 
